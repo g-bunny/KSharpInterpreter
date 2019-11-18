@@ -22,9 +22,8 @@ namespace KSharpInterpreter {
             List<string> enteredString = new List<string> ();
 
             //now we must parse into tokens
-            //enteredString = Kinterface.TakeInput ();
-            //string[] split = KimpleKarse.splitIntoIndiv (enteredString[0]);
-            //Console.WriteLine (string.Join (", ", split));
+            enteredString = Kinterface.TakeInput ();
+            List<string[]> allTokens = KimpleKarse.splitMultipleLines (enteredString);
         }
     }
 
