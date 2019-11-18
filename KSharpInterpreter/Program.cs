@@ -44,7 +44,13 @@ namespace KSharpInterpreter {
         }
     }
     class SimpleParse {
-
+        char[] delimiters = new char[4] { ' ', '(', ')', ';' };
+        public string[] splitIntoIndiv (string oneLine) {
+            if (oneLine.Length == 0) {
+                //alert error, empty input
+            }
+            return oneLine.Split (delimiters);
+        }
     }
     class Lexer {
 
