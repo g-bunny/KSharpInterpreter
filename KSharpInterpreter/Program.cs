@@ -48,6 +48,14 @@ namespace KSharpInterpreter {
             }
             return oneLine.Split (delimiters);
         }
+        public List<string[]> splitMultipleLines (List<string> line) {
+            List<string[]> allTokens = new List<string[]> ();
+            for (int i = 0; i < line.Count; i++) {
+                allTokens.Add (splitIntoIndiv (line[i]));
+                Console.WriteLine (string.Join (",", allTokens[i]));
+            }
+            return allTokens;
+        }
     }
     class Lexer {
 
