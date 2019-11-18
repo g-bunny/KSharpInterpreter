@@ -31,10 +31,7 @@ namespace KSharpInterpreter {
     class ConsoleInterface {
         public List<string> TakeInput () {
             List<string> enteredString = new List<string> ();
-            while (Console.ReadKey (true).Key != ConsoleKey.Enter) {
-                if (Console.ReadKey (true).Key == ConsoleKey.Escape) {
-                    continue;
-                }
+            while (Console.ReadKey (true).Key != ConsoleKey.Escape) {
                 enteredString.Add (Console.ReadLine ());
             }
             foreach (string ES in enteredString) {
