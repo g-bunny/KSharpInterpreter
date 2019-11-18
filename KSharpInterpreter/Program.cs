@@ -16,7 +16,7 @@ namespace KSharpInterpreter {
     class MainClass {
         public static void Main (string[] args) {
             Console.WriteLine ("Write your code here! Press 'enter' + 'esc' when you are ready to compile");
-            Syntax Kyntax = new Syntax ();
+            BuiltInFunctions Kyntax = new BuiltInFunctions ();
             ConsoleInterface Kinterface = new ConsoleInterface ();
             SimpleParse KimpleKarse = new SimpleParse ();
             List<string> enteredString = new List<string> ();
@@ -55,7 +55,25 @@ namespace KSharpInterpreter {
     class Lexer {
 
     }
-    class Syntax {
-
+    class BuiltInFunctions {
+        public float plus (float a, float b) {
+            return a + b;
+        }
+        public float minus (float a, float b) {
+            return a - b;
+        }
+        public virtual bool equals (float a, float b) {
+            const float marginErr = 0.001f;
+            if (Math.Abs (a - b) < marginErr) {
+                return true;
+            }
+            return false;
+        }
+        public virtual bool equals (string a, string b) {
+            if (a == b) {
+                return true;
+            }
+            return false;
+        }
     }
 }
