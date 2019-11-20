@@ -14,11 +14,11 @@ namespace KSharpInterpreter {
     //return plus(a,b)
     //esc
     public enum TokenType {
-        Statement = 0,
-        Expression,
-        BuiltInFunction,
-        CustomFunction,
-        Delimiter,
+        Statement = 0, //functionDefinition, if, return
+        Expression, //literal (number, string), function call, built-in-function
+        BuiltInFunction, //plus, minus, equals
+        CustomFunction, //hmm. keyword "func", return type, (must be a literal or void), 
+        Delimiter, //LParen, RParen, dot, comma, semicolon
         Undefined
     }
     class MainClass {
