@@ -66,6 +66,16 @@ namespace KSharpInterpreter {
     }
     class Lexer {
 
+    class Token {
+        public TokenType KTokenType;
+        public string TokenDetail;
+        string value;
+
+        public Token (string value) {
+            this.value = value;
+            this.TokenDetail = null;
+            this.KTokenType = TokenType.Undefined;
+        }
     }
     class BuiltInFunctions {
         public float plus (float a, float b) {
