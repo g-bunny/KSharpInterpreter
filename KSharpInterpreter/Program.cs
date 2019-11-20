@@ -65,6 +65,58 @@ namespace KSharpInterpreter {
         }
     }
     class Lexer {
+        //List<Token> allTokens = new List<Token> ();
+        Token Tokenize (string val) {
+            Token myTok = new Token (val);
+            float f;
+            if (val == "if") {
+                myTok.TokenDetail = "if";
+                myTok.KTokenType = TokenType.Statement;
+            } else if (val == "return") {
+                myTok.TokenDetail = "return";
+                myTok.KTokenType = TokenType.Statement;
+            } else if (val == "plus") {
+                myTok.KTokenType = TokenType.BuiltInFunction;
+            } else if (val == "minus") {
+                myTok.KTokenType = TokenType.BuiltInFunction;
+            } else if (val == "equals") {
+                myTok.KTokenType = TokenType.BuiltInFunction;
+            } else if (val == "fn") {
+                myTok.KTokenType = TokenType.CustomFunction;
+            } else if (val == "(") {
+                myTok.KTokenType = TokenType.Delimiter;
+                myTok.TokenDetail = "LParen";
+            } else if (val == ")") {
+                myTok.KTokenType = TokenType.Delimiter;
+                myTok.TokenDetail = "RParen";
+            } else if (val == "{") {
+                //start of a function 
+                myTok.KTokenType = TokenType.Delimiter;
+                myTok.TokenDetail = "LCurly";
+            } else if (val == "}") {
+                myTok.KTokenType = TokenType.Delimiter;
+                myTok.TokenDetail = "RCurly";
+            } else if (val == ",") {
+                //i guess this will separate parameters in functions
+                myTok.KTokenType = TokenType.Delimiter;
+                myTok.TokenDetail = "Comma";
+            } else if (val == "\"") {
+                //this makes a custom variable into a string, but MUST be closed by another "
+                myTok.KTokenType = TokenType.Expression;
+                myTok.TokenDetail = "String";
+            } else if (val == ";") {
+                //does anyone need semicolons? debatable
+            } else if (float.TryParse (val, out f)) {
+                myTok.KTokenType = TokenType.Expression;
+                myTok.TokenDetail = "Number";
+
+            } else {
+                //parse further
+
+            }
+            return myTok;
+        }
+    }
 
     class Token {
         public TokenType KTokenType;
