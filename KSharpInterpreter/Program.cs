@@ -13,6 +13,14 @@ namespace KSharpInterpreter {
     //var b = AddIfNotSame(4,5)
     //return plus(a,b)
     //esc
+    public enum TokenType {
+        Statement = 0,
+        Expression,
+        BuiltInFunction,
+        CustomFunction,
+        Delimiter,
+        Undefined
+    }
     class MainClass {
         public static void Main (string[] args) {
             Console.WriteLine ("Write your code here! Press 'enter' + 'esc' when you are ready to compile");
