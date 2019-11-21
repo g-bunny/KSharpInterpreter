@@ -167,4 +167,18 @@ namespace KSharpInterpreter {
             return false;
         }
     }
+
+    class ASTNode {
+        public int id;
+        public ASTNode next;
+        public ASTNode prev;
+        public ASTNode (int id) {
+            this.id = id;
+            next = null;
+            prev = null;
+        }
+    }
+    class AST {
+
+    }
 }
