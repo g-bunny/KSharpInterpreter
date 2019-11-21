@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace KSharpInterpreter {
     //sample input to interpret:
@@ -48,20 +49,20 @@ namespace KSharpInterpreter {
         }
     }
     class SimpleParse {
-        char[] delimiters = new char[4] { ' ', '(', ')', ';' };
+        string pattern = @"([=,(){}\s*])";
         public string[] splitIntoIndiv (string oneLine) {
             if (oneLine.Length == 0) {
                 //alert error, empty input
             }
-            return oneLine.Split (delimiters);
+            return Regex.Split (oneLine, pattern);
         }
         public List<string[]> splitMultipleLines (List<string> line) {
-            List<string[]> allTokens = new List<string[]> ();
+            List<string[]> allTokenValues = new List<string[]> ();
             for (int i = 0; i < line.Count; i++) {
                 allTokens.Add (splitIntoIndiv (line[i]));
                 Console.WriteLine (string.Join (",", allTokens[i]));
             }
-            return allTokens;
+            return allTokenValues;
         }
     }
     class Lexer {
