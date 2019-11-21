@@ -20,6 +20,7 @@ namespace KSharpInterpreter {
         BuiltInFunction, //plus, minus, equals
         CustomFunction, //hmm. keyword "func", return type, (must be a literal or void), 
         Delimiter, //LParen, RParen, dot, comma, semicolon
+        Empty,
         Undefined
     }
     class MainClass {
@@ -28,11 +29,22 @@ namespace KSharpInterpreter {
             BuiltInFunctions Kyntax = new BuiltInFunctions ();
             ConsoleInterface Kinterface = new ConsoleInterface ();
             SimpleParse KimpleKarse = new SimpleParse ();
+            Lexer KLexer = new Lexer ();
             List<string> enteredString = new List<string> ();
 
             //now we must parse into tokens
             enteredString = Kinterface.TakeInput ();
             List<string[]> allTokens = KimpleKarse.splitMultipleLines (enteredString);
+            List<Token> myTokens = new List<Token> ();
+            for (int i = 0; i < allTokens.Count; i++) {
+                for (int j = 0; j < allTokens[i].Length; j++) {
+                    Token t = KLexer.Tokenize (allTokens[i][j]);
+                    if (t.KTokenType != TokenType.Empty) {
+                        myTokens.Add (t);
+                        Console.WriteLine ("Token #: " + myTokens.Count + " value: " + t.value + " detail: " + t.TokenDetail);
+                    }
+                }
+            }
         }
     }
 
@@ -71,6 +83,14 @@ namespace KSharpInterpreter {
             Token myTok = new Token (val);
             float f;
             if (val == "if") {
+            if (val == " " || val == "") {
+                //destroy
+                myTok.KTokenType = TokenType.Empty;
+            } else if (val == "fn") {
+                myTok.TokenDetail = "function";
+                myTok.KTokenType = TokenType.CustomFunction;
+
+            } else if (val == "if") {
                 myTok.TokenDetail = "if";
                 myTok.KTokenType = TokenType.Statement;
             } else if (val == "return") {
