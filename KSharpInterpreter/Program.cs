@@ -52,15 +52,15 @@ namespace KSharpInterpreter {
         string pattern = @"([=,(){}\s*])";
         public string[] splitIntoIndiv (string oneLine) {
             if (oneLine.Length == 0) {
-                //alert error, empty input
+                Console.WriteLine ("your entry is empty!");
             }
             return Regex.Split (oneLine, pattern);
         }
         public List<string[]> splitMultipleLines (List<string> line) {
             List<string[]> allTokenValues = new List<string[]> ();
             for (int i = 0; i < line.Count; i++) {
-                allTokens.Add (splitIntoIndiv (line[i]));
-                Console.WriteLine (string.Join (",", allTokens[i]));
+                allTokenValues.Add (splitIntoIndiv (line[i]));
+                Console.WriteLine ("\"" + string.Join ("\",\"", allTokenValues[i]));
             }
             return allTokenValues;
         }
