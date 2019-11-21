@@ -18,7 +18,7 @@ namespace KSharpInterpreter {
         Statement = 0, //functionDefinition, if, return
         Expression, //literal (number, string), function call, built-in-function
         BuiltInFunction, //plus, minus, equals
-        CustomFunction, //hmm. keyword "func", return type, (must be a literal or void), 
+        CustomFunction, //keyword "fn" 
         Delimiter, //LParen, RParen, dot, comma, semicolon
         Empty,
         Undefined
@@ -26,12 +26,11 @@ namespace KSharpInterpreter {
     class MainClass {
         public static void Main (string[] args) {
             Console.WriteLine ("Write your code here! Press 'enter' + 'esc' when you are ready to compile");
-            BuiltInFunctions Kyntax = new BuiltInFunctions ();
+            BuiltInFunctions BuiltInKunctions = new BuiltInFunctions ();
             ConsoleInterface Kinterface = new ConsoleInterface ();
             SimpleParse KimpleKarse = new SimpleParse ();
             Lexer KLexer = new Lexer ();
             List<string> enteredString = new List<string> ();
-
             //now we must parse into tokens
             enteredString = Kinterface.TakeInput ();
             List<string[]> allTokens = KimpleKarse.splitMultipleLines (enteredString);
@@ -54,12 +53,10 @@ namespace KSharpInterpreter {
             while (Console.ReadKey (true).Key != ConsoleKey.Escape) {
                 enteredString.Add (Console.ReadLine ());
             }
-            foreach (string ES in enteredString) {
-                Console.WriteLine (ES);
-            }
             return enteredString;
         }
     }
+
     class SimpleParse {
         string pattern = @"([=,(){}\s*])";
         public string[] splitIntoIndiv (string oneLine) {
