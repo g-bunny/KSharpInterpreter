@@ -82,7 +82,6 @@ namespace KSharpInterpreter {
         Token Tokenize (string val) {
             Token myTok = new Token (val);
             float f;
-            if (val == "if") {
             if (val == " " || val == "") {
                 //destroy
                 myTok.KTokenType = TokenType.Empty;
@@ -132,8 +131,7 @@ namespace KSharpInterpreter {
                 myTok.TokenDetail = "Number";
 
             } else {
-                //parse further
-
+                myTok.TokenDetail = "Unknown";
             }
             return myTok;
         }
@@ -142,8 +140,10 @@ namespace KSharpInterpreter {
     class Token {
         public TokenType KTokenType;
         public string TokenDetail;
-        string value;
+        public string value;
+        public Token () {
 
+        }
         public Token (string value) {
             this.value = value;
             this.TokenDetail = null;
