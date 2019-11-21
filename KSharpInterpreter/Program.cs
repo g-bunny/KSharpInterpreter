@@ -79,7 +79,7 @@ namespace KSharpInterpreter {
     }
     class Lexer {
         //List<Token> allTokens = new List<Token> ();
-        Token Tokenize (string val) {
+        public Token Tokenize (string val) {
             Token myTok = new Token (val);
             float f;
             if (val == " " || val == "") {
@@ -129,7 +129,6 @@ namespace KSharpInterpreter {
             } else if (float.TryParse (val, out f)) {
                 myTok.KTokenType = TokenType.Expression;
                 myTok.TokenDetail = "Number";
-
             } else {
                 myTok.TokenDetail = "Unknown";
             }
