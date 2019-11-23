@@ -168,17 +168,52 @@ namespace KSharpInterpreter {
         }
     }
 
-    class ASTNode {
+    public class ASTNode {
         public int id;
-        public ASTNode next;
-        public ASTNode prev;
-        public ASTNode (int id) {
+        public Token myToken;
+        public ASTNode left;
+        public ASTNode right;
+        public ASTNode (int id, Token myToken) {
             this.id = id;
-            next = null;
-            prev = null;
+            this.myToken = myToken;
+            left = null;
+            right = null;
         }
     }
-    class AST {
+    public class AST {
+        ASTNode root = null;
+        public AST () {
 
+        }
+        void TraverseTree () {
+
+        }
+        void ConstructTree (ASTNode myNode) {
+            //customFunction
+
+            //builtInFunction
+            if (myNode.myToken.value == "plus") {
+                //next token
+                root = myNode;
+            }
+            //variableAssignment
+            // 
+        }
     }
+
+    public class BinaryOp : AST {
+        public BinaryOp (AST ast, ASTNode left, ASTNode op, ASTNode right) {
+
+        }
+    }
+
+    public class AssignmentTree : AST {
+        public AssignmentTree (AST aST, ASTNode left, ASTNode op, ASTNode right) {
+
+        }
+    }
+
+    // public float plus (AST ast) {
+
+    // }
 }
