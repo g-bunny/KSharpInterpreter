@@ -133,13 +133,12 @@ namespace KSharpInterpreter {
         }
     }
 
-    class Token {
+    public class Token {
         public TokenType KTokenType;
         public string TokenDetail;
+        public int lineId;
+        public int horizId;
         public string value;
-        public Token () {
-
-        }
         public Token (string value) {
             this.value = value;
             this.TokenDetail = null;
@@ -204,6 +203,24 @@ namespace KSharpInterpreter {
     public class BinaryOp : AST {
         public BinaryOp (AST ast, ASTNode left, ASTNode op, ASTNode right) {
 
+        AST ConstructBinaryOperationTree (Token[] oneLine) {
+            AST myTree = new AST ();
+            for (int i = 0; i < oneLine.Length; i++) {
+                ASTNode myNode = new ASTNode (i, oneLine[i]);
+                if (myTree.root == null) {
+                    //find and populate the root
+                    if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
+                        myTree.root = myNode;
+                    }
+                } else { //populate the children... the way the grammar is structured, it epects a '(', first param, second param, ')'
+                    if (i == myTree.root.id + 2) {
+                        myTree.root.left = myNode;
+                    } else if (i == myTree.root.id + 4) {
+                        myTree.root.right = myNode;
+                    }
+                }
+            }
+            return myTree;
         }
     }
 
