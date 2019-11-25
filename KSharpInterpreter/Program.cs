@@ -211,18 +211,19 @@ namespace KSharpInterpreter {
     }
 
     public class BinaryOp : AST {
-        public BinaryOp (AST ast, ASTNode left, ASTNode op, ASTNode right) {
+        public BinaryOp (ASTNode op) {
+            this.root = op;
             //op becomes root 
         }
-        AST ConstructBinaryOperationTree (Token[] oneLine) {
+        public AST ConstructBinaryOperationTree (List<Token> oneLine, ASTNode myRoot) {
             AST myTree = new AST ();
-            for (int i = 0; i < oneLine.Length; i++) {
+            for (int i = 0; i < oneLine.Count; i++) {
                 if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
                     myTree.root = new ASTNode (i, oneLine[i]);
                     break;
                 }
             }
-            for (int i = 0; i < oneLine.Length; i++) {
+            for (int i = 0; i < oneLine.Count; i++) {
                 ASTNode myNode = new ASTNode (i, oneLine[i]);
                 //populate the children... the way the grammar is structured, it expects a '(', first param, second param, ')'
                 if (i == myTree.root.id + 2) {
