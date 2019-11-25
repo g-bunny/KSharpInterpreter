@@ -5,13 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace KSharpInterpreter {
     //sample input to interpret:
-    //func AddIfNotSame(num a, num b){
+    //fn AddIfNotSame(num a, num b){
     //  if(equals(a,b)){
-    //      return "same"
+    //      return minus(a,b)
     //  }
     //  return plus(a,b)
-    //var a = AddIfNotSame(3,4)
-    //var b = AddIfNotSame(4,5)
+    //num a = AddIfNotSame(3,4)
+    //num b = AddIfNotSame(4,5)
+    //string c = "Hello World"
     //return plus(a,b)
     //esc
     public enum TokenType {
@@ -187,16 +188,25 @@ namespace KSharpInterpreter {
         void TraverseTree () {
 
         }
-        void ConstructTree (ASTNode myNode) {
-            //customFunction
 
-            //builtInFunction
-            if (myNode.myToken.value == "plus") {
-                //next token
-                root = myNode;
+        public AST ConstructTree (List<Token> oneLine) {
+            AST myAST = new AST ();
+
+            for (int i = 0; i < oneLine.Count; i++) {
+                if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].TokenDetail == "equalsAssigner") {
+                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
+                    AssignmentTree AssignmentAST = new AssignmentTree (rootNode);
+                    myAST = AssignmentAST.ConstructAnAssignment (oneLine, rootNode);
+                } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
+                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
+                    BinaryOp BinaryAST = new BinaryOp (rootNode);
+                    myAST = BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode);
+                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
+                }
             }
-            //variableAssignment
-            // 
+
+            return myAST;
         }
     }
 
