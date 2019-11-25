@@ -27,6 +27,9 @@ namespace KSharpInterpreter {
     }
     class MainClass {
         public static void Main (string[] args) {
+
+            Dictionary<string, string> StringsInMemory = new Dictionary<string, string> ();
+            Dictionary<string, float> NumsInMemory = new Dictionary<string, float> ();
             Console.WriteLine ("Write your code here! Press 'enter' + 'esc' when you are ready to compile");
             BuiltInFunctions BuiltInKunctions = new BuiltInFunctions ();
             ConsoleInterface Kinterface = new ConsoleInterface ();
@@ -158,6 +161,7 @@ namespace KSharpInterpreter {
         public string TokenDetail;
         public int lineId;
         public int horizId;
+        public float numericalVal;
         public string value;
         public Token (string value) {
             this.value = value;
@@ -267,7 +271,7 @@ namespace KSharpInterpreter {
             myTree.root.right = new ASTNode (myTree.root.id + 1, oneLine[myTree.root.id + 1]);
 
             if (oneLine[myTree.root.id - 2].TokenDetail == "num") {
-                myTree.root.right.myToken.numericalVal = decimal.Parse (myTree.root.right.myToken.value);
+                myTree.root.right.myToken.numericalVal = float.Parse (myTree.root.right.myToken.value);
             } else if (oneLine[myTree.root.id - 2].TokenDetail == "string") {
                 myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
             }
@@ -277,6 +281,13 @@ namespace KSharpInterpreter {
             //if first index is “string”, 
             //}
             return myTree;
+        }
+        public Tuple<string, string> AddStringToMemory (AssignmentTree AT) {
+            return Tuple.Create (AT.root.left.myToken.value, AT.root.right.myToken.value);
+        }
+
+        public Tuple<string, float> AddNumberToMemory (AssignmentTree AT) {
+            return Tuple.Create (AT.root.left.myToken.value, AT.root.right.myToken.numericalVal);
         }
 
         //evaluate a fully formed assignment tree:
