@@ -36,6 +36,8 @@ namespace KSharpInterpreter {
             enteredString = Kinterface.TakeInput ();
             List<string[]> allTokens = KimpleKarse.splitMultipleLines (enteredString);
             List<Token> myTokens = new List<Token> ();
+            AST myAST = new AST ();
+            List<AST> myASTs = new List<AST> ();
             for (int i = 0; i < allTokens.Count; i++) {
                 for (int j = 0; j < allTokens[i].Length; j++) {
                     Token t = KLexer.Tokenize (allTokens[i][j]);
@@ -45,6 +47,19 @@ namespace KSharpInterpreter {
                     }
                 }
             }
+            if (myAST.WalkTree ()) {
+                myASTs = (myAST.IdentifyRoot (myTokens));
+            }
+            Console.Write ("myASTs count: " + myASTs.Count);
+            // Console.Write (myAST.root.myToken.value);
+
+            // while (myAST.root != null) {
+            //     //go down to the lowest root
+            //     Console.Write ("root: " + myAST.root.myToken.value + " left: " + myAST.root.left.myToken.value + " right: " + myAST.root.right.myToken.value);
+            //     myAST.root = myAST.root.left;
+            // }
+            //Console.Write (myAST.root.myToken.value);
+            //bool thinggy = myAST.WalkTree ();
         }
     }
 
@@ -189,24 +204,25 @@ namespace KSharpInterpreter {
 
         }
 
-        public AST ConstructTree (List<Token> oneLine) {
-            AST myAST = new AST ();
+            }
+        }
 
+        public List<AST> IdentifyRoot (List<Token> oneLine) {
+            List<AST> myASTs = new List<AST> ();
             for (int i = 0; i < oneLine.Count; i++) {
                 if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].TokenDetail == "equalsAssigner") {
                     ASTNode rootNode = new ASTNode (i, oneLine[i]);
                     AssignmentTree AssignmentAST = new AssignmentTree (rootNode);
-                    myAST = AssignmentAST.ConstructAnAssignment (oneLine, rootNode);
+                    myASTs.Add (AssignmentAST.ConstructAnAssignment (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
                     ASTNode rootNode = new ASTNode (i, oneLine[i]);
                     BinaryOp BinaryAST = new BinaryOp (rootNode);
-                    myAST = BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode);
+                    myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
                     ASTNode rootNode = new ASTNode (i, oneLine[i]);
                 }
             }
-
-            return myAST;
+            return myASTs;
         }
     }
 
