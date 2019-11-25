@@ -237,27 +237,19 @@ namespace KSharpInterpreter {
     }
 
     public class AssignmentTree : AST {
-        public AssignmentTree (AST ast, ASTNode left, ASTNode op, ASTNode right) {
-            //op becomes root
+        public AssignmentTree (ASTNode op) {
+            this.root = op;
         }
-        AST ConstructAnAssignment (Token[] oneLine) {
+        public AST ConstructAnAssignment (List<Token> oneLine, ASTNode myRoot) {
             AST myTree = new AST ();
-            int rootId = -1;
-            for (int i = 0; i < oneLine.Length; i++) {
-                if (oneLine[i].KTokenType == TokenType.Delimiter && oneLine[i].TokenDetail == "=") {
-                    myTree.root = new ASTNode (i, oneLine[i]);
-                    rootId = i;
-                }
-            }
-            myTree.root.left = new ASTNode (rootId - 1, oneLine[rootId - 1]);
-            //for (int i = 0; i < oneLine.Length; i++) {
-            //ASTNode myNode = new ASTNode (i, oneLine[i]);
-            myTree.root.right = new ASTNode (rootId + 1, oneLine[rootId + 1]);
+            myTree.root = myRoot;
+            myTree.root.left = new ASTNode (myTree.root.id - 1, oneLine[myTree.root.id - 1]);
+            myTree.root.right = new ASTNode (myTree.root.id + 1, oneLine[myTree.root.id + 1]);
 
-            if (oneLine[rootId - 2].TokenDetail == "num") {
+            if (oneLine[myTree.root.id - 2].TokenDetail == "num") {
                 myTree.root.right.myToken.numericalVal = decimal.Parse (myTree.root.right.myToken.value);
-            } else if (oneLine[rootId - 2].TokenDetail == "string") {
-                //nothing
+            } else if (oneLine[myTree.root.id - 2].TokenDetail == "string") {
+                myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
             }
 
             //if first index is “num”, the following index is variable name. check that the same name does not exist. this index is left node
