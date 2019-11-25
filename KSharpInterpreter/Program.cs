@@ -21,6 +21,7 @@ namespace KSharpInterpreter {
         BuiltInFunction, //plus, minus, equals
         CustomFunction, //keyword "fn" 
         Delimiter, //LParen, RParen, dot, comma, semicolon
+        Assigner,
         Empty,
         Undefined
     }
@@ -139,6 +140,9 @@ namespace KSharpInterpreter {
                 myTok.TokenDetail = "String";
             } else if (val == ";") {
                 //does anyone need semicolons? debatable
+            } else if (val == "=") {
+                myTok.KTokenType = TokenType.Assigner;
+                myTok.TokenDetail = "equalsAssigner";
             } else if (float.TryParse (val, out f)) {
                 myTok.KTokenType = TokenType.Expression;
                 myTok.TokenDetail = "Number";
