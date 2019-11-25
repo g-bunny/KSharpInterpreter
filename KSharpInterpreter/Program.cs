@@ -226,12 +226,57 @@ namespace KSharpInterpreter {
     }
 
     public class AssignmentTree : AST {
-        public AssignmentTree (AST aST, ASTNode left, ASTNode op, ASTNode right) {
-
+        public AssignmentTree (AST ast, ASTNode left, ASTNode op, ASTNode right) {
+            //op becomes root
         }
+        AST ConstructAnAssignment (Token[] oneLine) {
+            AST myTree = new AST ();
+            int rootId = -1;
+            for (int i = 0; i < oneLine.Length; i++) {
+                if (oneLine[i].KTokenType == TokenType.Delimiter && oneLine[i].TokenDetail == "=") {
+                    myTree.root = new ASTNode (i, oneLine[i]);
+                    rootId = i;
+                }
+            }
+            myTree.root.left = new ASTNode (rootId - 1, oneLine[rootId - 1]);
+            //for (int i = 0; i < oneLine.Length; i++) {
+            //ASTNode myNode = new ASTNode (i, oneLine[i]);
+            myTree.root.right = new ASTNode (rootId + 1, oneLine[rootId + 1]);
+
+            if (oneLine[rootId - 2].TokenDetail == "num") {
+                myTree.root.right.myToken.numericalVal = decimal.Parse (myTree.root.right.myToken.value);
+            } else if (oneLine[rootId - 2].TokenDetail == "string") {
+                //nothing
+            }
+
+            //if first index is “num”, the following index is variable name. check that the same name does not exist. this index is left node
+            //the index after equals is right node. store as decimal type
+            //if first index is “string”, 
+            //}
+            return myTree;
+        }
+
+        //evaluate a fully formed assignment tree:
+
     }
 
-    // public float plus (AST ast) {
+    public class Conditional : AST {
+        public Conditional (AST ast, ASTNode left, ASTNode op, ASTNode right) {
+            //op becomes root .. which is "if" in this case
+            AST ConstructConditional (Token[] oneLine) {
+                AST myTree = new AST ();
+                for (int i = 0; i < oneLine.Length; i++) {
+                    if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                        myTree.root = new ASTNode (i, oneLine[i]);
+                        break;
+                    }
+                }
+                for (int i = 0; i < oneLine.Length; i++) {
+                    ASTNode myNode = new ASTNode (i, oneLine[i]);
 
-    // }
+                }
+                return myTree;
+            }
+        }
+    }
 }
