@@ -59,12 +59,14 @@ namespace KSharpInterpreter {
                     NumsInMemory.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
                 } else if (ast.ASTtype == AST.TreeType.AssignmentString) {
                     StringsInMemory.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
+                } else if (ast.ASTtype == AST.TreeType.Return) {
+                    //if(ast.root.left.myToken.)
+                    if (NumsInMemory.ContainsKey (ast.root.left.myToken.value)) {
+                        Console.WriteLine ("returning: " + NumsInMemory[ast.root.left.myToken.value]);
+                    } else if (StringsInMemory.ContainsKey (ast.root.left.myToken.value)) {
+                        Console.WriteLine ("returning: " + StringsInMemory[ast.root.left.myToken.value]);
+                    }
                 }
-            }
-            if (NumsInMemory.ContainsKey ("a")) {
-                Console.WriteLine ("found value: " + NumsInMemory["a"]);
-            } else {
-                Console.WriteLine ("did not find value");
             }
         }
     }
