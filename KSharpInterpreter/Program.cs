@@ -55,16 +55,17 @@ namespace KSharpInterpreter {
             Console.Write ("myASTs count: " + myASTs.Count);
             foreach (AST ast in myASTs) {
                 ast.WalkTree (ast);
+                if (ast.ASTtype == AST.TreeType.AssignmentNum) {
+                    NumsInMemory.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
+                } else if (ast.ASTtype == AST.TreeType.AssignmentString) {
+                    StringsInMemory.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
+                }
             }
-            // Console.Write (myAST.root.myToken.value);
-
-            // while (myAST.root != null) {
-            //     //go down to the lowest root
-            //     Console.Write ("root: " + myAST.root.myToken.value + " left: " + myAST.root.left.myToken.value + " right: " + myAST.root.right.myToken.value);
-            //     myAST.root = myAST.root.left;
-            // }
-            //Console.Write (myAST.root.myToken.value);
-            //bool thinggy = myAST.WalkTree ();
+            if (NumsInMemory.ContainsKey ("a")) {
+                Console.WriteLine ("found value: " + NumsInMemory["a"]);
+            } else {
+                Console.WriteLine ("did not find value");
+            }
         }
     }
 
@@ -205,6 +206,15 @@ namespace KSharpInterpreter {
         }
     }
     public class AST {
+        public enum TreeType {
+            Undefined = 0,
+            AssignmentNum,
+            AssignmentString,
+            BinaryOperation,
+            Conditional,
+            Return
+        }
+        public TreeType ASTtype;
         public ASTNode root = null;
         public AST () {
 
@@ -250,6 +260,13 @@ namespace KSharpInterpreter {
             }
             return myASTs;
         }
+        public Tuple<string, string> AddStringToMemory () {
+            return Tuple.Create (root.left.myToken.value, root.right.myToken.value);
+        }
+        public Tuple<string, float> AddNumberToMemory () {
+            return Tuple.Create (root.left.myToken.value, root.right.myToken.numericalVal);
+        }
+
     }
 
     public class BinaryOp : AST {
@@ -288,27 +305,21 @@ namespace KSharpInterpreter {
             myTree.root.left = new ASTNode (myTree.root.id - 1, oneLine[myTree.root.id - 1]);
             myTree.root.right = new ASTNode (myTree.root.id + 1, oneLine[myTree.root.id + 1]);
 
-            if (oneLine[myTree.root.id - 2].TokenDetail == "num") {
+            if (oneLine[myTree.root.id - 2].value == "num") {
                 myTree.root.right.myToken.numericalVal = float.Parse (myTree.root.right.myToken.value);
-            } else if (oneLine[myTree.root.id - 2].TokenDetail == "string") {
-                myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
-            }
+                myTree.ASTtype = TreeType.AssignmentNum;
 
+            } else if (oneLine[myTree.root.id - 2].value == "string") {
+                myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
+                myTree.ASTtype = TreeType.AssignmentString;
+
+            }
             //if first index is “num”, the following index is variable name. check that the same name does not exist. this index is left node
             //the index after equals is right node. store as decimal type
             //if first index is “string”, 
             //}
             return myTree;
         }
-        public Tuple<string, string> AddStringToMemory (AssignmentTree AT) {
-            return Tuple.Create (AT.root.left.myToken.value, AT.root.right.myToken.value);
-        }
-
-        public Tuple<string, float> AddNumberToMemory (AssignmentTree AT) {
-            return Tuple.Create (AT.root.left.myToken.value, AT.root.right.myToken.numericalVal);
-        }
-        //evaluate a fully formed assignment tree:
-
     }
 
     public class Conditional : AST {
