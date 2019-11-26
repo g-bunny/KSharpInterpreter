@@ -214,9 +214,8 @@ namespace KSharpInterpreter {
         }
         public TreeType ASTtype;
         public ASTNode root = null;
-        public AST () {
+        public BuiltInFunctions builtFunc = new BuiltInFunctions ();
 
-        }
         public void WalkTree (AST myAST) { //inorder traversal
             ASTNode prevRoot = myAST.root;
             ASTNode currentRoot = prevRoot;
@@ -246,10 +245,10 @@ namespace KSharpInterpreter {
             for (int i = 0; i < oneLine.Count; i++) {
                 ASTNode rootNode = new ASTNode (i, oneLine[i]);
                 if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].TokenDetail == "equalsAssigner") {
-                    AssignmentTree AssignmentAST = new AssignmentTree (rootNode);
+                    AssignmentTree AssignmentAST = new AssignmentTree ();
                     myASTs.Add (AssignmentAST.ConstructAnAssignment (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
-                    BinaryOp BinaryAST = new BinaryOp (rootNode);
+                    BinaryOp BinaryAST = new BinaryOp ();
                     myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
                     Conditional cond = new Conditional ();
@@ -271,10 +270,6 @@ namespace KSharpInterpreter {
     }
 
     public class BinaryOp : AST {
-        public BinaryOp (ASTNode op) {
-            this.root = op;
-            //op becomes root 
-        }
         public AST ConstructBinaryOperationTree (List<Token> oneLine, ASTNode myRoot) {
             AST myTree = new AST ();
             for (int i = 0; i < oneLine.Count; i++) {
@@ -298,9 +293,6 @@ namespace KSharpInterpreter {
     }
 
     public class AssignmentTree : AST {
-        public AssignmentTree (ASTNode op) {
-            this.root = op;
-        }
         public AST ConstructAnAssignment (List<Token> oneLine, ASTNode myRoot) {
             AST myTree = new AST ();
             myTree.root = myRoot;
@@ -325,8 +317,6 @@ namespace KSharpInterpreter {
     }
 
     public class Conditional : AST {
-        // public Conditional (AST ast, ASTNode left, ASTNode op, ASTNode right) {
-        //op becomes root .. which is "if" in this case
         public AST ConstructConditional (List<Token> oneLine) {
             AST myTree = new AST ();
             for (int i = 0; i < oneLine.Count; i++) {
