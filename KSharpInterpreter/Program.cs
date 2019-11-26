@@ -214,20 +214,19 @@ namespace KSharpInterpreter {
 
             }
         }
-
         public List<AST> IdentifyRoot (List<Token> oneLine) {
             List<AST> myASTs = new List<AST> ();
             for (int i = 0; i < oneLine.Count; i++) {
+                ASTNode rootNode = new ASTNode (i, oneLine[i]);
                 if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].TokenDetail == "equalsAssigner") {
-                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
                     AssignmentTree AssignmentAST = new AssignmentTree (rootNode);
                     myASTs.Add (AssignmentAST.ConstructAnAssignment (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
-                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
                     BinaryOp BinaryAST = new BinaryOp (rootNode);
                     myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
-                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
-                    ASTNode rootNode = new ASTNode (i, oneLine[i]);
+                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") { } else if (oneLine[i].value == "return") {
+                    ReturnStatement returnStatement = new ReturnStatement ();
+                    myASTs.Add (returnStatement.EvaluateTree (rootNode, oneLine[i + 1].value));
                 }
             }
             return myASTs;
@@ -289,7 +288,6 @@ namespace KSharpInterpreter {
         public Tuple<string, float> AddNumberToMemory (AssignmentTree AT) {
             return Tuple.Create (AT.root.left.myToken.value, AT.root.right.myToken.numericalVal);
         }
-
         //evaluate a fully formed assignment tree:
 
     }
@@ -313,4 +311,13 @@ namespace KSharpInterpreter {
             }
         }
     }
+    public class ReturnStatement : AST {
+        public AST EvaluateTree (ASTNode node, string returnVal) {
+            AST returnAst = new AST ();
+            returnAst.root = node;
+            node.left = new ASTNode (-1, new Token (returnVal));
+            return returnAst;
+        }
+    }
+
 }
