@@ -253,7 +253,10 @@ namespace KSharpInterpreter {
                 } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
                     BinaryOp BinaryAST = new BinaryOp (rootNode);
                     myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
-                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") { } else if (oneLine[i].value == "return") {
+                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                    Conditional cond = new Conditional ();
+                    myASTs.Add (cond.ConstructConditional (oneLine));
+                } else if (oneLine[i].value == "return") {
                     ReturnStatement returnStatement = new ReturnStatement ();
                     myASTs.Add (returnStatement.EvaluateTree (rootNode, oneLine[i + 1].value));
                 }
@@ -324,24 +327,24 @@ namespace KSharpInterpreter {
     }
 
     public class Conditional : AST {
-        public Conditional (AST ast, ASTNode left, ASTNode op, ASTNode right) {
-            //op becomes root .. which is "if" in this case
-            AST ConstructConditional (Token[] oneLine) {
-                AST myTree = new AST ();
-                for (int i = 0; i < oneLine.Length; i++) {
-                    if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
-                        myTree.root = new ASTNode (i, oneLine[i]);
-                        break;
-                    }
+        // public Conditional (AST ast, ASTNode left, ASTNode op, ASTNode right) {
+        //op becomes root .. which is "if" in this case
+        public AST ConstructConditional (List<Token> oneLine) {
+            AST myTree = new AST ();
+            for (int i = 0; i < oneLine.Count; i++) {
+                if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                    myTree.root = new ASTNode (i, oneLine[i]);
+                    break;
                 }
-                for (int i = 0; i < oneLine.Length; i++) {
-                    ASTNode myNode = new ASTNode (i, oneLine[i]);
-
-                }
-                myTree.ASTtype = TreeType.Conditional;
-                return myTree;
             }
+            for (int i = 0; i < oneLine.Count; i++) {
+                ASTNode myNode = new ASTNode (i, oneLine[i]);
+
+            }
+            myTree.ASTtype = TreeType.Conditional;
+            return myTree;
         }
+        // }
     }
     public class ReturnStatement : AST {
         public AST EvaluateTree (ASTNode node, string returnVal) {
