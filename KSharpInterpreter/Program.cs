@@ -291,6 +291,7 @@ namespace KSharpInterpreter {
                     myTree.root.right = myNode;
                 }
             }
+            myTree.ASTtype = TreeType.BinaryOperation;
             return myTree;
         }
     }
@@ -337,17 +338,18 @@ namespace KSharpInterpreter {
                     ASTNode myNode = new ASTNode (i, oneLine[i]);
 
                 }
+                myTree.ASTtype = TreeType.Conditional;
                 return myTree;
             }
         }
     }
     public class ReturnStatement : AST {
         public AST EvaluateTree (ASTNode node, string returnVal) {
-            AST returnAst = new AST ();
-            returnAst.root = node;
+            AST myTree = new AST ();
+            myTree.root = node;
             node.left = new ASTNode (-1, new Token (returnVal));
-            return returnAst;
+            myTree.ASTtype = TreeType.Return;
+            return myTree;
         }
     }
-
 }
