@@ -36,7 +36,6 @@ namespace KSharpInterpreter {
             SimpleParse KimpleKarse = new SimpleParse ();
             Lexer KLexer = new Lexer ();
             List<string> enteredString = new List<string> ();
-            //now we must parse into tokens
             enteredString = Kinterface.TakeInput ();
             List<string[]> allTokens = KimpleKarse.splitMultipleLines (enteredString);
             List<Token> myTokens = new List<Token> ();
@@ -131,22 +130,21 @@ namespace KSharpInterpreter {
                 myTok.KTokenType = TokenType.Delimiter;
                 myTok.TokenDetail = "RParen";
             } else if (val == "{") {
-                //start of a function 
+                //start of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
                 myTok.TokenDetail = "LCurly";
             } else if (val == "}") {
+                //end of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
                 myTok.TokenDetail = "RCurly";
             } else if (val == ",") {
-                //i guess this will separate parameters in functions
+                //this will separate parameters in functions
                 myTok.KTokenType = TokenType.Delimiter;
                 myTok.TokenDetail = "Comma";
             } else if (val == "\"") {
                 //this makes a custom variable into a string, but MUST be closed by another "
                 myTok.KTokenType = TokenType.Expression;
                 myTok.TokenDetail = "String";
-            } else if (val == ";") {
-                //does anyone need semicolons? debatable
             } else if (val == "=") {
                 myTok.KTokenType = TokenType.Assigner;
                 myTok.TokenDetail = "equalsAssigner";
@@ -163,8 +161,6 @@ namespace KSharpInterpreter {
     public class Token {
         public TokenType KTokenType;
         public string TokenDetail;
-        public int lineId;
-        public int horizId;
         public float numericalVal;
         public string value;
         public Token (string value) {
