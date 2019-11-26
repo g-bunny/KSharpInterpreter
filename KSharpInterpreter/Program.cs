@@ -51,10 +51,11 @@ namespace KSharpInterpreter {
                     }
                 }
             }
-            if (myAST.WalkTree ()) {
-                myASTs = (myAST.IdentifyRoot (myTokens));
-            }
+            myASTs = (myAST.IdentifyRoot (myTokens));
             Console.Write ("myASTs count: " + myASTs.Count);
+            foreach (AST ast in myASTs) {
+                ast.WalkTree (ast);
+            }
             // Console.Write (myAST.root.myToken.value);
 
             // while (myAST.root != null) {
@@ -204,14 +205,32 @@ namespace KSharpInterpreter {
         }
     }
     public class AST {
-        ASTNode root = null;
+        public ASTNode root = null;
         public AST () {
 
         }
-        void TraverseTree () {
-
-        }
-
+        public void WalkTree (AST myAST) { //inorder traversal
+            ASTNode prevRoot = myAST.root;
+            ASTNode currentRoot = prevRoot;
+            while (currentRoot.left != null) {
+                //go down to the lowest root
+                Console.Write ("root: " + myAST.root.myToken.value);
+                if (currentRoot.left != null) Console.Write (" left: " + currentRoot.left.myToken.value);
+                if (currentRoot.right != null) {
+                    Console.Write (" right: " + currentRoot.right.myToken.value);
+                    // if (currentRoot.right.myToken.value == "return") {
+                    //     EvaluateTree (currentRoot.right, currentRoot.right.left.myToken.value);
+                    //     Console.WriteLine (currentRoot.right.left.myToken.value);
+                    //     return;
+                    // }
+                }
+                // if (currentRoot.right != null && currentRoot.right.myToken.value == "return") {
+                //     EvaluateTree (currentRoot.right, currentRoot.right.left.myToken.value);
+                //     Console.WriteLine (currentRoot.right.left.myToken.value);
+                //     return;
+                // }
+                prevRoot = currentRoot;
+                currentRoot = currentRoot.left;
             }
         }
         public List<AST> IdentifyRoot (List<Token> oneLine) {
