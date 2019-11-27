@@ -22,6 +22,10 @@ namespace KSharpInterpreter {
         CustomFunction, //keyword "fn" 
         Delimiter, //LParen, RParen, dot, comma, semicolon
         Assigner,
+        NumType,
+        StringType,
+        NumType, //literal
+        StringType, //literal
         Empty,
         Undefined
     }
@@ -61,8 +65,12 @@ namespace KSharpInterpreter {
                 } else if (ast.ASTtype == AST.TreeType.Return) {
                     //if(ast.root.left.myToken.)
                     if (NumsInMemory.ContainsKey (ast.root.left.myToken.value)) {
+                    } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
+                        Console.WriteLine ("returning " + ast.root.left.myToken.value);
+                    }
+                    if (NumsInMemory.ContainsKey (ast.root.left.myToken.value)) { //return num variable value from memory
                         Console.WriteLine ("returning: " + NumsInMemory[ast.root.left.myToken.value]);
-                    } else if (StringsInMemory.ContainsKey (ast.root.left.myToken.value)) {
+                    } else if (StringsInMemory.ContainsKey (ast.root.left.myToken.value)) { //return string variable value from memory
                         Console.WriteLine ("returning: " + StringsInMemory[ast.root.left.myToken.value]);
                     }
                 }
