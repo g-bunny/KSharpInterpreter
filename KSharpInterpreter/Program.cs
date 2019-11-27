@@ -46,7 +46,7 @@ namespace KSharpInterpreter {
                     Token t = KLexer.Tokenize (allTokens[i][j]);
                     if (t.KTokenType != TokenType.Empty) {
                         myTokens.Add (t);
-                        Console.WriteLine ("Token #: " + myTokens.Count + " value: " + t.value + " detail: " + t.TokenDetail);
+                        Console.WriteLine ("Token #: " + myTokens.Count + " value: " + t.value + " tokenType: " + t.KTokenType);
                     }
                 }
             }
@@ -103,17 +103,13 @@ namespace KSharpInterpreter {
             Token myTok = new Token (val);
             float f;
             if (val == " " || val == "") {
-                //destroy
+                //discard this
                 myTok.KTokenType = TokenType.Empty;
             } else if (val == "fn") {
-                myTok.TokenDetail = "function";
                 myTok.KTokenType = TokenType.CustomFunction;
-
             } else if (val == "if") {
-                myTok.TokenDetail = "if";
                 myTok.KTokenType = TokenType.Statement;
             } else if (val == "return") {
-                myTok.TokenDetail = "return";
                 myTok.KTokenType = TokenType.Statement;
             } else if (val == "plus") {
                 myTok.KTokenType = TokenType.BuiltInFunction;
@@ -125,47 +121,35 @@ namespace KSharpInterpreter {
                 myTok.KTokenType = TokenType.CustomFunction;
             } else if (val == "(") {
                 myTok.KTokenType = TokenType.Delimiter;
-                myTok.TokenDetail = "LParen";
             } else if (val == ")") {
                 myTok.KTokenType = TokenType.Delimiter;
-                myTok.TokenDetail = "RParen";
             } else if (val == "{") {
                 //start of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
-                myTok.TokenDetail = "LCurly";
             } else if (val == "}") {
                 //end of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
-                myTok.TokenDetail = "RCurly";
             } else if (val == ",") {
                 //this will separate parameters in functions
                 myTok.KTokenType = TokenType.Delimiter;
-                myTok.TokenDetail = "Comma";
             } else if (val == "\"") {
                 //this makes a custom variable into a string, but MUST be closed by another "
-                myTok.KTokenType = TokenType.Expression;
-                myTok.TokenDetail = "String";
+                myTok.KTokenType = TokenType.StringType;
             } else if (val == "=") {
                 myTok.KTokenType = TokenType.Assigner;
-                myTok.TokenDetail = "equalsAssigner";
             } else if (float.TryParse (val, out f)) {
-                myTok.KTokenType = TokenType.Expression;
-                myTok.TokenDetail = "Number";
-            } else {
-                myTok.TokenDetail = "Unknown";
-            }
+                myTok.KTokenType = TokenType.NumType;
+            } else { }
             return myTok;
         }
     }
 
     public class Token {
         public TokenType KTokenType;
-        public string TokenDetail;
         public float numericalVal;
         public string value;
         public Token (string value) {
             this.value = value;
-            this.TokenDetail = null;
             this.KTokenType = TokenType.Undefined;
         }
     }
@@ -244,13 +228,13 @@ namespace KSharpInterpreter {
             List<AST> myASTs = new List<AST> ();
             for (int i = 0; i < oneLine.Count; i++) {
                 ASTNode rootNode = new ASTNode (i, oneLine[i]);
-                if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].TokenDetail == "equalsAssigner") {
+                if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].value == "=") {
                     AssignmentTree AssignmentAST = new AssignmentTree ();
                     myASTs.Add (AssignmentAST.ConstructAnAssignment (oneLine, rootNode));
                 } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
                     BinaryOp BinaryAST = new BinaryOp ();
                     myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
-                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].value == "if") {
                     Conditional cond = new Conditional ();
                     myASTs.Add (cond.ConstructConditional (oneLine));
                 } else if (oneLine[i].value == "return") {
@@ -320,7 +304,7 @@ namespace KSharpInterpreter {
         public AST ConstructConditional (List<Token> oneLine) {
             AST myTree = new AST ();
             for (int i = 0; i < oneLine.Count; i++) {
-                if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].TokenDetail == "if") {
+                if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].value == "if") {
                     myTree.root = new ASTNode (i, oneLine[i]);
                     break;
                 }
