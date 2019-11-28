@@ -51,7 +51,7 @@ namespace KSharpInterpreter {
                     Token t = KLexer.Tokenize (allTokens[i][j]);
                     if (t.KTokenType != TokenType.Empty) {
                         myTokens.Add (t);
-                        Console.WriteLine ("Token #: " + myTokens.Count + " value: " + t.value + " tokenType: " + t.KTokenType);
+                        Console.WriteLine ("Token #: " + myTokens.Count + " value: " + t.value + " tokenType: " + t.KTokenType + " numVal: " + t.numericalVal);
                     }
                 }
             }
@@ -93,7 +93,6 @@ namespace KSharpInterpreter {
         }
     }
     class Lexer {
-        //List<Token> allTokens = new List<Token> ();
         public Token Tokenize (string val) {
             Token myTok = new Token (val);
             float f;
@@ -171,11 +170,15 @@ namespace KSharpInterpreter {
         public int id;
         public Token myToken;
         public ASTNode left;
+        // public List<ASTNode> optionalMiddleNodes;
         public ASTNode right;
+        // public ASTNode parent;
+        // public bool visited;
         public ASTNode (int id, Token myToken) {
             this.id = id;
             this.myToken = myToken;
             left = null;
+            // optionalMiddleNodes = null;
             right = null;
         }
     }
@@ -294,6 +297,7 @@ namespace KSharpInterpreter {
             }
             return myASTs;
         }
+        //assignment methods 
         public Tuple<string, string> AddStringToMemory () {
             return Tuple.Create (root.left.myToken.value, root.right.myToken.value);
         }
@@ -340,7 +344,6 @@ namespace KSharpInterpreter {
             return myTree;
         }
     }
-
     public class AssignmentTree : AST {
         public AST ConstructAnAssignment (List<Token> tokens, ASTNode myRoot) {
             AST myTree = new AST ();
@@ -353,16 +356,10 @@ namespace KSharpInterpreter {
             } else if (tokens[myTree.root.id - 2].value == "string") {
                 myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
                 myTree.ASTtype = TreeType.AssignmentString;
-
             }
-            //if first index is “num”, the following index is variable name. check that the same name does not exist. this index is left node
-            //the index after equals is right node. store as decimal type
-            //if first index is “string”, 
-            //}
             return myTree;
         }
     }
-
     public class Conditional : AST {
         public AST ConstructConditional (List<Token> tokens) {
             AST myTree = new AST ();
@@ -378,7 +375,6 @@ namespace KSharpInterpreter {
             myTree.ASTtype = TreeType.Conditional;
             return myTree;
         }
-        // }
     }
     public class ReturnStatement : AST {
         public AST EvaluateTree (ASTNode node, string returnVal) {
