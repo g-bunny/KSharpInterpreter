@@ -60,24 +60,9 @@ namespace KSharpInterpreter {
             myASTs = (myAST.IdentifyRoot (myTokens));
             Console.Write ("myASTs count: " + myASTs.Count);
             foreach (AST ast in myASTs) {
-                if (ast.ASTtype == AST.TreeType.AssignmentNum) {
-                    NumsInMemory.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
-                } else if (ast.ASTtype == AST.TreeType.AssignmentString) {
-                    StringsInMemory.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
-                } else if (ast.ASTtype == AST.TreeType.Return) {
-                    //if(ast.root.left.myToken.)
-                    if (NumsInMemory.ContainsKey (ast.root.left.myToken.value)) {
-                    } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
-                        Console.WriteLine ("returning " + ast.root.left.myToken.value);
-                    }
-                    if (NumsInMemory.ContainsKey (ast.root.left.myToken.value)) { //return num variable value from memory
-                        Console.WriteLine ("returning: " + NumsInMemory[ast.root.left.myToken.value]);
-                    } else if (StringsInMemory.ContainsKey (ast.root.left.myToken.value)) { //return string variable value from memory
-                        Console.WriteLine ("returning: " + StringsInMemory[ast.root.left.myToken.value]);
-                    }
-                }
                 //ast.WalkTree (ast);
                 //ast.inorder (ast);
+                Console.WriteLine ("returning: " + ast.EvaluateResult (ast, NumsInMemory, StringsInMemory));
             }
         }
     }
@@ -248,15 +233,40 @@ namespace KSharpInterpreter {
         //         currentRoot = currentRoot.left;
         //     }
         // }
+        public string EvaluateResult (AST ast, Dictionary<string, float> numMem, Dictionary<string, string> stringMem) {
+            string result = "";
+            if (ast.ASTtype == AST.TreeType.Undefined) {
+                if (numMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
+                    if (ast.root.myToken.KTokenType == TokenType.Assigner) {
+                        float f;
+                        if (float.TryParse (ast.root.right.myToken.value, out f)) {
+                            ast.root.right.myToken.numericalVal = float.Parse (ast.root.right.myToken.value);
+                        }
+                        numMem[ast.AddNumberToMemory ().Item1] = ast.AddNumberToMemory ().Item2;
+                    }
                 }
-                // if (currentRoot.right != null && currentRoot.right.myToken.value == "return") {
-                //     EvaluateTree (currentRoot.right, currentRoot.right.left.myToken.value);
-                //     Console.WriteLine (currentRoot.right.left.myToken.value);
-                //     return;
-                // }
-                prevRoot = currentRoot;
-                currentRoot = currentRoot.left;
             }
+            if (ast.ASTtype == AST.TreeType.AssignmentNum) {
+                numMem.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
+            } else if (ast.ASTtype == AST.TreeType.AssignmentString) {
+                if (stringMem.ContainsKey (ast.AddStringToMemory ().Item1)) {
+                    stringMem[ast.AddStringToMemory ().Item1] = ast.AddStringToMemory ().Item2;
+                } else {
+                    stringMem.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
+                }
+            } else if (ast.ASTtype == AST.TreeType.Return) {
+                if (ast.root.left.myToken.KTokenType == TokenType.BuiltInFunction) {
+                    result = ast.BinaryOperation (ast.root.left).ToString ();
+                } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
+                    result = ast.root.left.myToken.value;
+                }
+                if (numMem.ContainsKey (ast.root.left.myToken.value)) {
+                    result = numMem[ast.root.left.myToken.value].ToString ();
+                } else if (stringMem.ContainsKey (ast.root.left.myToken.value)) {
+                    result = stringMem[ast.root.left.myToken.value];
+                }
+            }
+            return result;
         }
         public List<AST> IdentifyRoot (List<Token> oneLine) {
             List<AST> myASTs = new List<AST> ();
