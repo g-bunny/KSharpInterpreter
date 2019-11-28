@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace KSharpInterpreter {
-    //sample input to interpret:
-    //fn AddIfNotSame(num a, num b){
-    //  if(equals(a,b)){
-    //      return minus(a,b)
-    //  }
-    //  return plus(a,b)
-    //num a = AddIfNotSame(3,4)
-    //num b = AddIfNotSame(4,5)
-    //string c = "Hello World"
-    //return plus(a,b)
-    //esc
+    /* An interpreter for K#, a simple programming language built with C#
+
+    Not whitespace sensitive, and no semicolons needed
+    Included variable types: num, string
+
+    Keywords: return, if
+
+    Currently supported functions:
+    plus(num a, num b)
+    minus(num a, num b)
+    equals(num a, num b)
+    equals(string a, string b)
+
+    Works as a console application. Type the code into the console. To exit code entering mode & start interpreting, press esc. */
     public enum TokenType {
         Statement = 0, //functionDefinition, if, return
         Expression, //literal (number, string), function call, built-in-function
