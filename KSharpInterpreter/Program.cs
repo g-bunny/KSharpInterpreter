@@ -236,6 +236,11 @@ namespace KSharpInterpreter {
             switch (ast.ASTtype) {
                 case AST.TreeType.Undefined:
                     if (ast.root.myToken.KTokenType == TokenType.Assigner) {
+                        if (stringMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
+                            stringMem[ast.AddStringToMemory ().Item1] = ast.AddStringToMemory ().Item2;
+                        } else if (numMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
+                            numMem[ast.AddNumberToMemory ().Item1] = ast.AddNumberToMemory ().Item2; //override existing num in memory
+                        }
                     }
                     break;
                 case AST.TreeType.AssignmentNum:
