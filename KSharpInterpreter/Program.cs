@@ -233,47 +233,40 @@ namespace KSharpInterpreter {
         // }
         public string EvaluateResult (AST ast, Dictionary<string, float> numMem, Dictionary<string, string> stringMem) {
             string result = "";
-            if (ast.ASTtype == AST.TreeType.Undefined) {
-                if (!numMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
-                    return result;
-                }
-                if (ast.root.myToken.KTokenType == TokenType.Assigner) {
-                    float f;
-                    if (float.TryParse (ast.root.right.myToken.value, out f)) {
-                        ast.root.right.myToken.numericalVal = float.Parse (ast.root.right.myToken.value);
+            switch (ast.ASTtype) {
+                case AST.TreeType.Undefined:
+                    if (ast.root.myToken.KTokenType == TokenType.Assigner) {
                     }
-                    numMem[ast.AddNumberToMemory ().Item1] = ast.AddNumberToMemory ().Item2;
-                }
-            }
-            if (ast.ASTtype == AST.TreeType.AssignmentNum) {
-                numMem.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
-            } else if (ast.ASTtype == AST.TreeType.AssignmentString) {
-                if (stringMem.ContainsKey (ast.AddStringToMemory ().Item1)) {
-                    stringMem[ast.AddStringToMemory ().Item1] = ast.AddStringToMemory ().Item2;
-                } else {
+                    break;
+                case AST.TreeType.AssignmentNum:
+                    numMem.Add (ast.AddNumberToMemory ().Item1, ast.AddNumberToMemory ().Item2);
+                    break;
+                case AST.TreeType.AssignmentString:
                     stringMem.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
-                }
-            } else if (ast.ASTtype == AST.TreeType.BinaryOperation) {
-                if (ast.root.myToken.value == "equals") {
-                    if (ast.BinaryComparison (ast)) {
-                        result = "true";
+                    break;
+                case AST.TreeType.BinaryOperation:
+                    if (ast.root.myToken.value == "equals") {
+                        if (ast.BinaryComparison (ast)) {
+                            result = "true";
+                        } else {
+                            result = "false";
+                        }
                     } else {
-                        result = "false";
+                        result = ast.BinaryOperation (ast).ToString ();
                     }
-                } else {
-                    result = ast.BinaryOperation (ast).ToString ();
-                }
-            } else if (ast.ASTtype == AST.TreeType.Return) {
-                if (ast.root.left.myToken.KTokenType == TokenType.BuiltInFunction) {
-                    result = ast.BinaryOperation (ast).ToString ();
-                } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
-                    result = ast.root.left.myToken.value;
-                }
-                if (numMem.ContainsKey (ast.root.left.myToken.value)) {
-                    result = numMem[ast.root.left.myToken.value].ToString ();
-                } else if (stringMem.ContainsKey (ast.root.left.myToken.value)) {
-                    result = stringMem[ast.root.left.myToken.value];
-                }
+                    break;
+                case AST.TreeType.Return:
+                    if (ast.root.left.myToken.KTokenType == TokenType.BuiltInFunction) {
+                        result = ast.BinaryOperation (ast).ToString ();
+                    } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
+                        result = ast.root.left.myToken.value;
+                    }
+                    if (numMem.ContainsKey (ast.root.left.myToken.value)) {
+                        result = numMem[ast.root.left.myToken.value].ToString ();
+                    } else if (stringMem.ContainsKey (ast.root.left.myToken.value)) {
+                        result = stringMem[ast.root.left.myToken.value];
+                    }
+                    break;
             }
             return result;
         }
