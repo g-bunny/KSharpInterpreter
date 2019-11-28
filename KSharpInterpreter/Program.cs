@@ -130,6 +130,7 @@ namespace KSharpInterpreter {
                 myTok.KTokenType = TokenType.Assigner;
             } else if (float.TryParse (val, out f)) {
                 myTok.KTokenType = TokenType.NumType;
+                myTok.numericalVal = float.Parse (val);
             } else { }
             return myTok;
         }
