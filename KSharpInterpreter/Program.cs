@@ -274,22 +274,22 @@ namespace KSharpInterpreter {
             }
             return result;
         }
-        public List<AST> IdentifyRoot (List<Token> oneLine) {
+        public List<AST> BuildIndivTreesFromRoot (List<Token> tokens) {
             List<AST> myASTs = new List<AST> ();
-            for (int i = 0; i < oneLine.Count; i++) {
-                ASTNode rootNode = new ASTNode (i, oneLine[i]);
-                if (oneLine[i].KTokenType == TokenType.Assigner && oneLine[i].value == "=") {
+            for (int i = 0; i < tokens.Count; i++) {
+                ASTNode rootNode = new ASTNode (i, tokens[i]);
+                if (tokens[i].KTokenType == TokenType.Assigner && tokens[i].value == "=") {
                     AssignmentTree AssignmentAST = new AssignmentTree ();
-                    myASTs.Add (AssignmentAST.ConstructAnAssignment (oneLine, rootNode));
-                } else if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
+                    myASTs.Add (AssignmentAST.ConstructAnAssignment (tokens, rootNode));
+                } else if (tokens[i].KTokenType == TokenType.BuiltInFunction) {
                     BinaryOp BinaryAST = new BinaryOp ();
-                    myASTs.Add (BinaryAST.ConstructBinaryOperationTree (oneLine, rootNode));
-                } else if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].value == "if") {
+                    myASTs.Add (BinaryAST.ConstructBinaryOperationTree (tokens, rootNode));
+                } else if (tokens[i].KTokenType == TokenType.Statement && tokens[i].value == "if") {
                     Conditional cond = new Conditional ();
-                    myASTs.Add (cond.ConstructConditional (oneLine));
-                } else if (oneLine[i].value == "return") {
+                    myASTs.Add (cond.ConstructConditional (tokens));
+                } else if (tokens[i].value == "return") {
                     ReturnStatement returnStatement = new ReturnStatement ();
-                    myASTs.Add (returnStatement.EvaluateTree (rootNode, oneLine[i + 1].value));
+                    myASTs.Add (returnStatement.EvaluateTree (rootNode, tokens[i + 1].value));
                 }
             }
             return myASTs;
@@ -326,33 +326,31 @@ namespace KSharpInterpreter {
         }
     }
     public class BinaryOp : AST {
-        public AST ConstructBinaryOperationTree (List<Token> oneLine, ASTNode myRoot) {
+        public AST ConstructBinaryOperationTree (List<Token> tokens, ASTNode myRoot) {
             AST myTree = new AST ();
-            for (int i = 0; i < oneLine.Count; i++) {
-                if (oneLine[i].KTokenType == TokenType.BuiltInFunction) {
-                    myTree.root = new ASTNode (i, oneLine[i]);
+            for (int i = 0; i < tokens.Count; i++) {
+                if (tokens[i].KTokenType == TokenType.BuiltInFunction) {
+                    myTree.root = new ASTNode (i, tokens[i]);
                     break;
                 }
             }
-            myTree.root.left = new ASTNode (myTree.root.id + 2, oneLine[myTree.root.id + 2]);
-            myTree.root.right = new ASTNode (myTree.root.id + 4, oneLine[myTree.root.id + 4]);
+            myTree.root.left = new ASTNode (myTree.root.id + 2, tokens[myTree.root.id + 2]);
+            myTree.root.right = new ASTNode (myTree.root.id + 4, tokens[myTree.root.id + 4]);
             myTree.ASTtype = TreeType.BinaryOperation;
             return myTree;
         }
     }
 
     public class AssignmentTree : AST {
-        public AST ConstructAnAssignment (List<Token> oneLine, ASTNode myRoot) {
+        public AST ConstructAnAssignment (List<Token> tokens, ASTNode myRoot) {
             AST myTree = new AST ();
             myTree.root = myRoot;
-            myTree.root.left = new ASTNode (myTree.root.id - 1, oneLine[myTree.root.id - 1]);
-            myTree.root.right = new ASTNode (myTree.root.id + 1, oneLine[myTree.root.id + 1]);
+            myTree.root.left = new ASTNode (myTree.root.id - 1, tokens[myTree.root.id - 1]);
+            myTree.root.right = new ASTNode (myTree.root.id + 1, tokens[myTree.root.id + 1]);
 
-            if (oneLine[myTree.root.id - 2].value == "num") {
-                myTree.root.right.myToken.numericalVal = float.Parse (myTree.root.right.myToken.value);
+            if (tokens[myTree.root.id - 2].value == "num") {
                 myTree.ASTtype = TreeType.AssignmentNum;
-
-            } else if (oneLine[myTree.root.id - 2].value == "string") {
+            } else if (tokens[myTree.root.id - 2].value == "string") {
                 myTree.root.right.myToken.value = myTree.root.right.myToken.value.Trim ('"');
                 myTree.ASTtype = TreeType.AssignmentString;
 
@@ -366,17 +364,16 @@ namespace KSharpInterpreter {
     }
 
     public class Conditional : AST {
-        public AST ConstructConditional (List<Token> oneLine) {
+        public AST ConstructConditional (List<Token> tokens) {
             AST myTree = new AST ();
-            for (int i = 0; i < oneLine.Count; i++) {
-                if (oneLine[i].KTokenType == TokenType.Statement && oneLine[i].value == "if") {
-                    myTree.root = new ASTNode (i, oneLine[i]);
+            for (int i = 0; i < tokens.Count; i++) {
+                if (tokens[i].KTokenType == TokenType.Statement && tokens[i].value == "if") {
+                    myTree.root = new ASTNode (i, tokens[i]);
                     break;
                 }
             }
-            for (int i = 0; i < oneLine.Count; i++) {
-                ASTNode myNode = new ASTNode (i, oneLine[i]);
-
+            for (int i = 0; i < tokens.Count; i++) {
+                ASTNode myNode = new ASTNode (i, tokens[i]);
             }
             myTree.ASTtype = TreeType.Conditional;
             return myTree;
