@@ -318,15 +318,8 @@ namespace KSharpInterpreter {
                     break;
                 }
             }
-            for (int i = 0; i < oneLine.Count; i++) {
-                ASTNode myNode = new ASTNode (i, oneLine[i]);
-                //populate the children... the way the grammar is structured, it expects a '(', first param, second param, ')'
-                if (i == myTree.root.id + 2) {
-                    myTree.root.left = myNode;
-                } else if (i == myTree.root.id + 4) {
-                    myTree.root.right = myNode;
-                }
-            }
+            myTree.root.left = new ASTNode (myTree.root.id + 2, oneLine[myTree.root.id + 2]);
+            myTree.root.right = new ASTNode (myTree.root.id + 4, oneLine[myTree.root.id + 4]);
             myTree.ASTtype = TreeType.BinaryOperation;
             return myTree;
         }
