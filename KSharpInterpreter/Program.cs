@@ -150,7 +150,7 @@ namespace KSharpInterpreter {
             this.KTokenType = TokenType.Undefined;
         }
     }
-    class BuiltInFunctions {
+    public class BuiltInFunctions {
         public float plus (float a, float b) {
             return a + b;
         }
@@ -254,9 +254,12 @@ namespace KSharpInterpreter {
                 } else {
                     stringMem.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
                 }
+            } else if (ast.ASTtype == AST.TreeType.BinaryOperation) {
+                result = ast.BinaryOperation (ast).ToString ();
+
             } else if (ast.ASTtype == AST.TreeType.Return) {
                 if (ast.root.left.myToken.KTokenType == TokenType.BuiltInFunction) {
-                    result = ast.BinaryOperation (ast.root.left).ToString ();
+                    result = ast.BinaryOperation (ast).ToString ();
                 } else if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
                     result = ast.root.left.myToken.value;
                 }
@@ -295,6 +298,15 @@ namespace KSharpInterpreter {
             return Tuple.Create (root.left.myToken.value, root.right.myToken.numericalVal);
         }
 
+        public float BinaryOperation (AST ast) { //built in function methods "plus" & "minus"
+            float result = -1;
+            if (ast.root.myToken.value == "plus") {
+                result = builtFunc.plus (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
+            } else if (ast.root.myToken.value == "minus") {
+                result = builtFunc.minus (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
+            }
+            return result;
+        }
     }
 
     public class BinaryOp : AST {
