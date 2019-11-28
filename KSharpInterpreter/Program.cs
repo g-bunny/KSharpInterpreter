@@ -277,6 +277,23 @@ namespace KSharpInterpreter {
             }
             return result;
         }
+        public virtual void TraverseCompoundTree (AST myAST) {
+            if (myAST.root == null) {
+                return;
+            }
+            Stack<ASTNode> nodeStack = new Stack<ASTNode> ();
+            ASTNode current = myAST.root;
+            // traverse the tree  
+            while (current != null || nodeStack.Count > 0) {
+                while (current != null) {
+                    nodeStack.Push (current);
+                    current = current.left;
+                }
+                current = nodeStack.Pop ();
+                Console.WriteLine ("traversing: " + current.myToken.value + ", ");
+                current = current.right;
+            }
+        }
         public List<AST> BuildIndivTreesFromRoot (List<Token> tokens) {
             List<AST> myASTs = new List<AST> ();
             for (int i = 0; i < tokens.Count; i++) {
