@@ -312,12 +312,18 @@ namespace KSharpInterpreter {
         public bool BinaryComparison (AST ast) { //built in function "equals"
             bool result = false;
             if (ast.root.myToken.value == "equals") {
-                result = builtFunc.equals (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
+                if (ast.root.left.myToken.KTokenType != ast.root.right.myToken.KTokenType) {
+                    return result; //eventually throw type incompatibility error
+                }
+                if (ast.root.left.myToken.KTokenType == TokenType.NumType) {
+                    result = builtFunc.equals (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
+                } else {
+                    result = builtFunc.equals (ast.root.left.myToken.value, ast.root.right.myToken.value);
+                }
             }
             return result;
         }
     }
-
     public class BinaryOp : AST {
         public AST ConstructBinaryOperationTree (List<Token> oneLine, ASTNode myRoot) {
             AST myTree = new AST ();
