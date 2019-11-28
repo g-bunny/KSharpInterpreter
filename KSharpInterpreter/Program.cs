@@ -250,8 +250,15 @@ namespace KSharpInterpreter {
                     stringMem.Add (ast.AddStringToMemory ().Item1, ast.AddStringToMemory ().Item2);
                 }
             } else if (ast.ASTtype == AST.TreeType.BinaryOperation) {
-                result = ast.BinaryOperation (ast).ToString ();
-
+                if (ast.root.myToken.value == "equals") {
+                    if (ast.BinaryComparison (ast)) {
+                        result = "true";
+                    } else {
+                        result = "false";
+                    }
+                } else {
+                    result = ast.BinaryOperation (ast).ToString ();
+                }
             } else if (ast.ASTtype == AST.TreeType.Return) {
                 if (ast.root.left.myToken.KTokenType == TokenType.BuiltInFunction) {
                     result = ast.BinaryOperation (ast).ToString ();
@@ -299,6 +306,13 @@ namespace KSharpInterpreter {
                 result = builtFunc.plus (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
             } else if (ast.root.myToken.value == "minus") {
                 result = builtFunc.minus (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
+            }
+            return result;
+        }
+        public bool BinaryComparison (AST ast) { //built in function "equals"
+            bool result = false;
+            if (ast.root.myToken.value == "equals") {
+                result = builtFunc.equals (ast.root.left.myToken.numericalVal, ast.root.right.myToken.numericalVal);
             }
             return result;
         }
