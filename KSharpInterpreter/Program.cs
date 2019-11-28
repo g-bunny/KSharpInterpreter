@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace KSharpInterpreter {
-    /* An interpreter for K#, a simple programming language built with C#
+    /* An interpreter for K#, a simple invented programming language built with C#
 
     Not whitespace sensitive, and no semicolons needed
     Included variable types: num, string

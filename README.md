@@ -3,12 +3,13 @@
 Not whitespace sensitive, and no semicolons needed
 
 ### Included variable types:
-num 
+num, 
 string
 
 ### Keywords:
-return
-if
+return,
+if,
+=
 
 ### Currently supported functions:
 
