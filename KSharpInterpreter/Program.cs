@@ -231,14 +231,15 @@ namespace KSharpInterpreter {
         public string EvaluateResult (AST ast, Dictionary<string, float> numMem, Dictionary<string, string> stringMem) {
             string result = "";
             if (ast.ASTtype == AST.TreeType.Undefined) {
-                if (numMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
-                    if (ast.root.myToken.KTokenType == TokenType.Assigner) {
-                        float f;
-                        if (float.TryParse (ast.root.right.myToken.value, out f)) {
-                            ast.root.right.myToken.numericalVal = float.Parse (ast.root.right.myToken.value);
-                        }
-                        numMem[ast.AddNumberToMemory ().Item1] = ast.AddNumberToMemory ().Item2;
+                if (!numMem.ContainsKey (ast.AddNumberToMemory ().Item1)) {
+                    return result;
+                }
+                if (ast.root.myToken.KTokenType == TokenType.Assigner) {
+                    float f;
+                    if (float.TryParse (ast.root.right.myToken.value, out f)) {
+                        ast.root.right.myToken.numericalVal = float.Parse (ast.root.right.myToken.value);
                     }
+                    numMem[ast.AddNumberToMemory ().Item1] = ast.AddNumberToMemory ().Item2;
                 }
             }
             if (ast.ASTtype == AST.TreeType.AssignmentNum) {
