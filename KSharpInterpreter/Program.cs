@@ -194,43 +194,6 @@ namespace KSharpInterpreter {
         public TreeType ASTtype;
         public ASTNode root = null;
         public BuiltInFunctions builtFunc = new BuiltInFunctions ();
-        // public ASTNode WalkDownToEndOfBranch (AST myAST, Dictionary<string, float> num, Dictionary<string, string> str) {
-        //     ASTNode prevRoot = myAST.root;
-        //     ASTNode currentRoot = myAST.root;
-        //     while (currentRoot.left != null) {
-        //         prevRoot = currentRoot;
-        //         currentRoot = currentRoot.left;
-        //     }
-        //     if (currentRoot != myAST.root) {
-        //         prevRoot.myToken.value = EvaluateResult (myAST, num, str);
-        //     }
-        //     return currentRoot;
-        // }
-        // public ASTNode WalkTreeBubbleUp (AST myAST) { //inorder traversal
-        //     ASTNode prevRoot = myAST.root;
-        //     ASTNode currentRoot = myAST.root;
-        //     while (currentRoot.left != null) {
-        //         currentRoot = currentRoot.left;
-        //         //go down to the lowest root
-        //         Console.Write ("root: " + myAST.root.myToken.value);
-        //         if (currentRoot.left != null) Console.Write (" left: " + currentRoot.left.myToken.value);
-        //         if (currentRoot.right != null) {
-        //             Console.Write (" right: " + currentRoot.right.myToken.value);
-        //             // if (currentRoot.right.myToken.value == "return") {
-        //             //     EvaluateTree (currentRoot.right, currentRoot.right.left.myToken.value);
-        //             //     Console.WriteLine (currentRoot.right.left.myToken.value);
-        //             //     return;
-        //             // }
-        //         }
-        //         // if (currentRoot.right != null && currentRoot.right.myToken.value == "return") {
-        //         //     EvaluateTree (currentRoot.right, currentRoot.right.left.myToken.value);
-        //         //     Console.WriteLine (currentRoot.right.left.myToken.value);
-        //         //     return;
-        //         // }
-        //         prevRoot = currentRoot;
-        //         currentRoot = currentRoot.left;
-        //     }
-        // }
         public string EvaluateResult (AST ast, Dictionary<string, float> numMem, Dictionary<string, string> stringMem) {
             string result = "";
             switch (ast.ASTtype) {
