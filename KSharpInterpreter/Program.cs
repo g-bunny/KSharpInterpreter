@@ -55,7 +55,7 @@ namespace KSharpInterpreter {
                     }
                 }
             }
-            myASTs = (myAST.IdentifyRoot (myTokens));
+            myASTs = myAST.BuildIndivTreesFromRoot (myTokens);
             Console.Write ("myASTs count: " + myASTs.Count);
             foreach (AST ast in myASTs) {
                 //ast.WalkTree (ast);
