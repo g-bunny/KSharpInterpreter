@@ -20,15 +20,14 @@ namespace KSharpInterpreter {
     Works as a console application. Type the code into the console. To exit code entering mode & start interpreting, press esc. */
     public enum TokenType {
         Statement = 0, //functionDefinition, if, return
-        Expression, //literal (number, string), function call, built-in-function
+        Expression, //function call
         BuiltInFunction, //plus, minus, equals
         CustomFunction, //keyword "fn" 
-        Delimiter, //LParen, RParen, dot, comma, semicolon
-        Assigner,
-        NumType,
-        StringType,
+        Delimiter, //LParen, RParen, comma
+        Assigner, // =
         NumType, //literal
         StringType, //literal
+        Variable,
         Empty,
         Undefined
     }
@@ -38,7 +37,6 @@ namespace KSharpInterpreter {
             Dictionary<string, string> StringsInMemory = new Dictionary<string, string> ();
             Dictionary<string, float> NumsInMemory = new Dictionary<string, float> ();
             Console.WriteLine ("Write your code here! Press 'enter' + 'esc' when you are ready to compile");
-            BuiltInFunctions BuiltInKunctions = new BuiltInFunctions ();
             ConsoleInterface Kinterface = new ConsoleInterface ();
             SimpleParse KimpleKarse = new SimpleParse ();
             Lexer KLexer = new Lexer ();
@@ -89,7 +87,7 @@ namespace KSharpInterpreter {
             List<string[]> allTokenValues = new List<string[]> ();
             for (int i = 0; i < line.Count; i++) {
                 allTokenValues.Add (splitIntoIndiv (line[i]));
-                Console.WriteLine ("\"" + string.Join ("\",\"", allTokenValues[i]));
+                //Console.WriteLine ("\"" + string.Join ("\",\"", allTokenValues[i]));
             }
             return allTokenValues;
         }
@@ -120,17 +118,13 @@ namespace KSharpInterpreter {
                 myTok.KTokenType = TokenType.Delimiter;
             } else if (val == ")") {
                 myTok.KTokenType = TokenType.Delimiter;
-            } else if (val == "{") {
-                //start of a function inscription
+            } else if (val == "{") { //start of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
-            } else if (val == "}") {
-                //end of a function inscription
+            } else if (val == "}") { //end of a function inscription
                 myTok.KTokenType = TokenType.Delimiter;
-            } else if (val == ",") {
-                //this will separate parameters in functions
+            } else if (val == ",") { //this will separate parameters in functions
                 myTok.KTokenType = TokenType.Delimiter;
-            } else if (val == "\"") {
-                //this makes a custom variable into a string, but MUST be closed by another "
+            } else if (val == "\"") { //this makes a custom variable into a string, but MUST be closed by another "
                 myTok.KTokenType = TokenType.StringType;
             } else if (val == "=") {
                 myTok.KTokenType = TokenType.Assigner;
